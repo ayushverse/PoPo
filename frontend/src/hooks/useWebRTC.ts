@@ -52,10 +52,15 @@ export function useWebRTC(roomId: string) {
 
         // Handle remote stream
         pc.ontrack = (event) => {
-            console.log("Received remote track from", userId);
+            console.log("Received remote track from", userId, "Track kind:", event.track.kind);
             setPeers(prev => {
                 const existing = prev.find(p => p.id === userId);
-                if (existing) return prev;
+                if (existing) {
+                    console.log("Updating existing peer stream for", userId);
+                    // Update the existing peer with new stream
+                    return prev.map(p => p.id === userId ? { ...p, stream: event.streams[0] } : p);
+                }
+                console.log("Adding new peer to state:", userId);
                 return [...prev, { id: userId, stream: event.streams[0], isLocal: false }];
             });
         };
