@@ -20,10 +20,19 @@ export type WebRTCStream = {
     isLocal?: boolean;
 };
 
+export type ChatMessage = {
+    id: string;
+    userId: string;
+    userName: string;
+    message: string;
+    timestamp: number;
+};
+
 export function useWebRTC(roomId: string) {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [peers, setPeers] = useState<WebRTCStream[]>([]);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
     const peersRef = useRef<{ [key: string]: RTCPeerConnection }>({});
     const localStreamRef = useRef<MediaStream | null>(null);
@@ -184,11 +193,17 @@ export function useWebRTC(roomId: string) {
             });
 
             s.on('user-disconnected', (userId: string) => {
+                console.log('User disconnected:', userId);
                 if (peersRef.current[userId]) {
                     peersRef.current[userId].close();
                     delete peersRef.current[userId];
                 }
                 setPeers(prev => prev.filter(p => p.id !== userId));
+            });
+
+            s.on('chat-message', (data: ChatMessage) => {
+                console.log('Received chat message:', data);
+                setChatMessages(prev => [...prev, data]);
             });
 
         }).catch(err => {
@@ -307,10 +322,43 @@ export function useWebRTC(roomId: string) {
         }
     }, [stopScreenShare]);
 
+    const sendMessage = useCallback((message: string) => {
+        if (!socketRef.current) return;
+
+        const chatMessage: ChatMessage = {
+            id: Date.now().toString() + Math.random().toString(36),
+            userId: socketRef.current.id || 'unknown',
+            userName: `User ${(socketRef.current.id || '').substr(0, 4)}`,
+            message,
+            timestamp: Date.now()
+        };
+
+        // Add own message to local state
+        setChatMessages(prev => [...prev, chatMessage]);
+
+        // Broadcast to others in room
+        socketRef.current.emit('chat-message', { ...chatMessage, roomId });
+    }, [roomId]);
+
     // Combine local stream with remote peers for the UI
     const allPeers = localStream
         ? [{ id: 'local', stream: localStream, isLocal: true }, ...peers]
         : peers;
 
-    return { localStream, peers: allPeers, socket, error, toggleAudio, toggleVideo, isAudioEnabled, isVideoEnabled, shareScreen, stopScreenShare, isScreenSharing, isConnected };
+    return {
+        localStream,
+        peers: allPeers,
+        socket,
+        error,
+        toggleAudio,
+        toggleVideo,
+        isAudioEnabled,
+        isVideoEnabled,
+        shareScreen,
+        stopScreenShare,
+        isScreenSharing,
+        isConnected,
+        chatMessages,
+        sendMessage
+    };
 }

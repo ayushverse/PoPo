@@ -3,10 +3,12 @@
 import { useWebRTC } from '@/hooks/useWebRTC';
 import { VideoGrid } from '@/components/studio/VideoGrid';
 import { Editor } from '@/components/studio/Editor';
+import { Chat } from '@/components/studio/Chat';
 import { Button } from '@/components/ui/Button';
 import { useRecorder } from '@/hooks/useRecorder';
-import { Mic, Video, MonitorUp, PhoneOff, Circle, MicOff, VideoOff } from 'lucide-react';
+import { Mic, Video, MonitorUp, PhoneOff, Circle, MicOff, VideoOff, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function StudioPage() {
     const router = useRouter();
@@ -23,8 +25,11 @@ export default function StudioPage() {
         isVideoEnabled,
         shareScreen,
         stopScreenShare,
-        isScreenSharing
+        isScreenSharing,
+        chatMessages,
+        sendMessage
     } = useWebRTC('main-studio');
+    const [showChat, setShowChat] = useState(false);
     const { isRecording, startRecording, stopRecording, recordedChunks } = useRecorder();
 
     if (error) {
@@ -85,8 +90,41 @@ export default function StudioPage() {
             </div>
 
             {/* Main Grid */}
-            <div className="flex-1 bg-gray-100 dark:bg-zinc-900/50 rounded-3xl border border-white/20 overflow-hidden relative">
-                <VideoGrid peers={peers} />
+            <div className="flex-1 flex gap-4 overflow-hidden">
+                {/* Video Section */}
+                <div className={`transition-all ${showChat ? 'flex-[3]' : 'flex-1'} bg-gray-100 dark:bg-zinc-900/50 rounded-3xl border border-white/20 overflow-hidden relative`}>
+                    <VideoGrid peers={peers} />
+                </div>
+
+                {/* Chat Panel - Desktop */}
+                {showChat && (
+                    <div className="hidden md:flex md:flex-[1] h-full rounded-3xl overflow-hidden border border-white/20">
+                        <Chat
+                            messages={chatMessages}
+                            onSendMessage={sendMessage}
+                            currentUserId={socket?.id || ''}
+                        />
+                    </div>
+                )}
+
+                {/* Chat Panel - Mobile Overlay */}
+                {showChat && (
+                    <div className="md:hidden absolute inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end">
+                        <div className="w-full h-[70%] bg-white dark:bg-gray-900 rounded-t-3xl overflow-hidden">
+                            <Chat
+                                messages={chatMessages}
+                                onSendMessage={sendMessage}
+                                currentUserId={socket?.id || ''}
+                            />
+                            <button
+                                onClick={() => setShowChat(false)}
+                                className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Bottom Controls */}
@@ -119,6 +157,15 @@ export default function StudioPage() {
                 </Button>
                 <Button variant={isRecording ? 'danger' : 'secondary'} size="lg" className="rounded-full shadow-md transition-all" onClick={handleRecordToggle}>
                     <Circle className={`w-5 h-5 ${isRecording ? 'fill-current animate-pulse' : ''}`} />
+                </Button>
+                <Button
+                    variant={showChat ? "primary" : "secondary"}
+                    size="lg"
+                    className="rounded-full shadow-md transition-all"
+                    onClick={() => setShowChat(!showChat)}
+                >
+                    <MessageSquare className="w-5 h-5 md:mr-2" />
+                    <span className="hidden md:inline">Chat</span>
                 </Button>
                 <Button variant="danger" size="lg" className="rounded-full shadow-md" onClick={handleLeave}>
                     <PhoneOff className="w-5 h-5 md:mr-2" /> <span className="hidden md:inline">Leave</span>

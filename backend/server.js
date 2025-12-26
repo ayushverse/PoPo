@@ -52,6 +52,11 @@ io.on('connection', (socket) => {
     console.log(`[ICE] Received from ${data.from}, forwarding to ${data.to}`);
     socket.to(data.to).emit('ice-candidate', data);
   });
+
+  socket.on('chat-message', (data) => {
+    console.log(`[CHAT] Message from ${data.userId} in room ${data.roomId}`);
+    socket.to(data.roomId).emit('chat-message', data);
+  });
 });
 
 httpServer.listen(port, (err) => {
