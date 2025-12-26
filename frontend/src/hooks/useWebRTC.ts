@@ -152,7 +152,7 @@ export function useWebRTC(roomId: string) {
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
                 console.log('Sending ANSWER to:', data.from);
-                s.emit('answer', { roomId, sdp: answer, to: data.from });
+                s.emit('answer', { roomId, sdp: answer, to: data.from, from: s.id });
             });
 
             s.on('answer', async (data) => {
