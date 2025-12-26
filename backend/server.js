@@ -5,8 +5,13 @@ const hostname = 'localhost';
 const port = parseInt(process.env.PORT || '3001', 10);
 
 const httpServer = createServer((req, res) => {
-  res.writeHead(200);
-  res.end('Socket.io server running');
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', timestamp: Date.now() }));
+  } else {
+    res.writeHead(200);
+    res.end('Socket.io server running');
+  }
 });
 
 const io = new Server(httpServer, {
@@ -62,4 +67,13 @@ io.on('connection', (socket) => {
 httpServer.listen(port, (err) => {
   if (err) throw err;
   console.log(`> Socket server ready on http://${hostname}:${port}`);
+
+  // Self-ping every 10 minutes to prevent Render cold start (free tier only)
+  if (process.env.NODE_ENV === 'production' && process.env.BACKEND_URL) {
+    setInterval(() => {
+      fetch(`${process.env.BACKEND_URL}/health`)
+        .then(res => console.log('[KEEP-ALIVE] Ping successful'))
+        .catch(err => console.error('[KEEP-ALIVE] Ping failed:', err.message));
+    }, 10 * 60 * 1000); // Every 10 minutes
+  }
 });
