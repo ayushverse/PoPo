@@ -39,14 +39,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('offer', (data) => {
+    console.log(`[OFFER] Received from ${data.from}, forwarding to ${data.to}`);
     socket.to(data.to).emit('offer', data);
   });
 
   socket.on('answer', (data) => {
+    console.log(`[ANSWER] Received from ${data.from}, forwarding to ${data.to}`);
     socket.to(data.to).emit('answer', data);
   });
 
   socket.on('ice-candidate', (data) => {
+    console.log(`[ICE] Received from ${data.from}, forwarding to ${data.to}`);
     socket.to(data.to).emit('ice-candidate', data);
   });
 });
