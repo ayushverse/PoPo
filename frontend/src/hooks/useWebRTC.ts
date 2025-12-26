@@ -109,7 +109,11 @@ export function useWebRTC(roomId: string) {
             // We shouldn't add local stream to 'peers' state to avoid duplicates and sync issues.
             // We will combine it in the hook return.
 
-            s.emit('join-room', roomId, s.id);
+            // Wait for connection to ensure s.id is available
+            s.on('connect', () => {
+                console.log('Socket connected, joining room:', roomId);
+                s.emit('join-room', roomId, s.id);
+            });
 
             // Socket Events
             s.on('user-connected', (userId: string) => {
