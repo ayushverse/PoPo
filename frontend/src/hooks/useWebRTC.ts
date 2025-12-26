@@ -84,8 +84,9 @@ export function useWebRTC(roomId: string) {
 
     useEffect(() => {
         let isMounted = true;
-        const s = io(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001', {
-            path: '/socket.io'
+        const s = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001', {
+            path: '/socket.io',
+            transports: ['websocket', 'polling']
         });
         setSocket(s);
         socketRef.current = s;
