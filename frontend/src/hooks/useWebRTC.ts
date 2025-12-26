@@ -67,14 +67,20 @@ export function useWebRTC(roomId: string) {
 
         // Create Offer
         if (initiator) {
+            console.log('Creating OFFER for peer:', userId);
             pc.createOffer().then(offer => {
-                pc.setLocalDescription(offer);
+                console.log('Offer created, setting local description');
+                return pc.setLocalDescription(offer);
+            }).then(() => {
+                console.log('Sending OFFER to:', userId);
                 socket.emit('offer', {
                     roomId,
-                    sdp: offer,
+                    sdp: pc.localDescription,
                     to: userId,
                     from: socket.id
                 });
+            }).catch(err => {
+                console.error('Error creating/sending offer:', err);
             });
         }
 
