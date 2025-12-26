@@ -77,6 +77,7 @@ export function useWebRTC(roomId: string) {
     }, [roomId]);
 
     const [error, setError] = useState<Error | null>(null);
+    const [isConnected, setIsConnected] = useState(false);
 
     // ... refs ...
 
@@ -90,6 +91,26 @@ export function useWebRTC(roomId: string) {
         });
         setSocket(s);
         socketRef.current = s;
+
+        // Socket Connection Handlers
+        const onConnect = () => {
+            console.log('Socket connected, joining room:', roomId);
+            setIsConnected(true);
+            s.emit('join-room', roomId, s.id);
+        };
+
+        const onDisconnect = () => {
+            console.log('Socket disconnected');
+            setIsConnected(false);
+        };
+
+        if (s.connected) {
+            onConnect();
+        } else {
+            s.on('connect', onConnect);
+        }
+
+        s.on('disconnect', onDisconnect);
 
         // Get Local Media
         // Try with simple constraints first
@@ -109,11 +130,7 @@ export function useWebRTC(roomId: string) {
             // We shouldn't add local stream to 'peers' state to avoid duplicates and sync issues.
             // We will combine it in the hook return.
 
-            // Wait for connection to ensure s.id is available
-            s.on('connect', () => {
-                console.log('Socket connected, joining room:', roomId);
-                s.emit('join-room', roomId, s.id);
-            });
+            // Handled by onConnect above
 
             // Socket Events
             s.on('user-connected', (userId: string) => {
@@ -268,5 +285,5 @@ export function useWebRTC(roomId: string) {
         ? [{ id: 'local', stream: localStream, isLocal: true }, ...peers]
         : peers;
 
-    return { localStream, peers: allPeers, socket, error, toggleAudio, toggleVideo, isAudioEnabled, isVideoEnabled, shareScreen, stopScreenShare, isScreenSharing };
+    return { localStream, peers: allPeers, socket, error, toggleAudio, toggleVideo, isAudioEnabled, isVideoEnabled, shareScreen, stopScreenShare, isScreenSharing, isConnected };
 }
