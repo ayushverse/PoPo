@@ -28,7 +28,7 @@ export type ChatMessage = {
     timestamp: number;
 };
 
-export function useWebRTC(roomId: string) {
+export function useWebRTC(roomId: string, username: string) {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [peers, setPeers] = useState<WebRTCStream[]>([]);
@@ -328,7 +328,7 @@ export function useWebRTC(roomId: string) {
         const chatMessage: ChatMessage = {
             id: Date.now().toString() + Math.random().toString(36),
             userId: socketRef.current.id || 'unknown',
-            userName: `User ${(socketRef.current.id || '').substr(0, 4)}`,
+            userName: username,
             message,
             timestamp: Date.now()
         };
@@ -338,7 +338,7 @@ export function useWebRTC(roomId: string) {
 
         // Broadcast to others in room
         socketRef.current.emit('chat-message', { ...chatMessage, roomId });
-    }, [roomId]);
+    }, [roomId, username]);
 
     // Combine local stream with remote peers for the UI
     const allPeers = localStream

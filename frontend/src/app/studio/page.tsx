@@ -4,14 +4,31 @@ import { useWebRTC } from '@/hooks/useWebRTC';
 import { VideoGrid } from '@/components/studio/VideoGrid';
 import { Editor } from '@/components/studio/Editor';
 import { Chat } from '@/components/studio/Chat';
+import { UsernameModal } from '@/components/studio/UsernameModal';
 import { Button } from '@/components/ui/Button';
 import { useRecorder } from '@/hooks/useRecorder';
 import { Mic, Video, MonitorUp, PhoneOff, Circle, MicOff, VideoOff, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function StudioPage() {
     const router = useRouter();
+    const [username, setUsername] = useState<string | null>(null);
+    const [showChat, setShowChat] = useState(false);
+
+    // Load username from localStorage on mount
+    useEffect(() => {
+        const savedUsername = localStorage.getItem('popo-username');
+        if (savedUsername) {
+            setUsername(savedUsername);
+        }
+    }, []);
+
+    const handleUsernameSubmit = (name: string) => {
+        setUsername(name);
+        localStorage.setItem('popo-username', name);
+    };
+
     // Hardcoded room for demo 'main-studio'
     // In real app, this would come from params
     const {
@@ -28,9 +45,13 @@ export default function StudioPage() {
         isScreenSharing,
         chatMessages,
         sendMessage
-    } = useWebRTC('main-studio');
-    const [showChat, setShowChat] = useState(false);
+    } = useWebRTC('main-studio', username || 'Anonymous');
     const { isRecording, startRecording, stopRecording, recordedChunks } = useRecorder();
+
+    // Show username modal if not set
+    if (!username) {
+        return <UsernameModal onSubmit={handleUsernameSubmit} />;
+    }
 
     if (error) {
         return (
