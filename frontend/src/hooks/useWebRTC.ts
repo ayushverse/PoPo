@@ -85,7 +85,10 @@ export function useWebRTC(roomId: string) {
 
     useEffect(() => {
         let isMounted = true;
-        const s = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001', {
+        const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        console.log('Connecting to socket at:', socketUrl);
+
+        const s = io(socketUrl, {
             path: '/socket.io',
             transports: ['websocket', 'polling']
         });
@@ -94,7 +97,8 @@ export function useWebRTC(roomId: string) {
 
         // Socket Connection Handlers
         const onConnect = () => {
-            console.log('Socket connected, joining room:', roomId);
+            console.log('Socket connected with ID:', s.id);
+            console.log('Joining room:', roomId);
             setIsConnected(true);
             s.emit('join-room', roomId, s.id);
         };
@@ -134,21 +138,32 @@ export function useWebRTC(roomId: string) {
 
             // Socket Events
             s.on('user-connected', (userId: string) => {
-                console.log('User connected:', userId);
+                console.log('User connected event received for:', userId);
+                console.log('I am initiator, creating peer...');
                 createPeer(userId, true, stream, s);
             });
 
             s.on('offer', async (data) => {
+                console.log('Received OFFER from:', data.from);
                 const pc = createPeer(data.from, false, stream, s);
                 await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                console.log('Remote description set (Offer)');
+
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
+                console.log('Sending ANSWER to:', data.from);
                 s.emit('answer', { roomId, sdp: answer, to: data.from });
             });
 
             s.on('answer', async (data) => {
+                console.log('Received ANSWER from:', data.from);
                 const pc = peersRef.current[data.from];
-                if (pc) await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                if (pc) {
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    console.log('Remote description set (Answer)');
+                } else {
+                    console.warn('Received Answer for unknown peer:', data.from);
+                }
             });
 
             s.on('ice-candidate', async (data) => {
