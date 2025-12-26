@@ -45,7 +45,8 @@ export function useWebRTC(roomId: string) {
                 socket.emit('ice-candidate', {
                     roomId,
                     candidate: event.candidate,
-                    to: userId
+                    to: userId,
+                    from: socket.id
                 });
             }
         };
