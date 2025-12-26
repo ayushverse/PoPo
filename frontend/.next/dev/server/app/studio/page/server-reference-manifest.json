@@ -1,0 +1,35 @@
+{
+  "node": {
+    "780bb8cd47a9182c7f58c797ab2b2146c81b3baeee": {
+      "workers": {
+        "app/studio/page": {
+          "moduleId": "[project]/.next-internal/server/app/studio/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/actions/gemini.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "processVideoWithGemini",
+          "filename": "src/app/actions/gemini.ts"
+        }
+      },
+      "layer": {
+        "app/studio/page": "action-browser"
+      },
+      "exportedName": "processVideoWithGemini",
+      "filename": "src/app/actions/gemini.ts"
+    },
+    "40da9516a8b8e8f65d3543c5b611608364e0bb0e47": {
+      "workers": {
+        "app/studio/page": {
+          "moduleId": "[project]/.next-internal/server/app/studio/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/actions/gemini.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listGeminiModels",
+          "filename": "src/app/actions/gemini.ts"
+        }
+      },
+      "layer": {
+        "app/studio/page": "action-browser"
+      },
+      "exportedName": "listGeminiModels",
+      "filename": "src/app/actions/gemini.ts"
+    }
+  },
+  "edge": {}
+}

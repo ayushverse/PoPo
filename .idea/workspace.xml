@@ -1,15 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3530f587-f49b-4b01-9f7f-c7aafc802642" name="Changes" comment="" />
+    <list default="true" id="3530f587-f49b-4b01-9f7f-c7aafc802642" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.mjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/postcss.config.mjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/file.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/globe.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/next.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/vercel.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/window.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/actions/gemini.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/test-db/route.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/studio/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Footer.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Header.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/studio/AIAssistant.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/studio/Editor.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/studio/VideoGrid.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ui/Button.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ui/Card.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ui/Input.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useFFmpeg.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useRecorder.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useWebRTC.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/db.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/utils.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ayushverse&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ayushverse/PoPo.git&quot;,
+    &quot;accountId&quot;: &quot;09dc59a5-6ad2-4efa-bc6d-1f30c553e0d2&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="37OOFY7VTWplrDCjMjfIdYwwJVM" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -19,6 +68,14 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -37,6 +94,9 @@
       <option name="presentableId" value="Default" />
       <updated>1766770549189</updated>
       <workItem from="1766770550487" duration="3000" />
+      <workItem from="1766776575285" duration="86000" />
+      <workItem from="1766777634849" duration="26000" />
+      <workItem from="1766777706071" duration="325000" />
     </task>
     <servers />
   </component>
