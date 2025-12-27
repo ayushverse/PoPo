@@ -27,12 +27,12 @@ const STUN_SERVERS = {
 };
 function useWebRTC(roomId) {
     _s();
-    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(24);
-    if ($[0] !== "a961386f9f8c8a0c3fa6c055b90a8689b6fbb60105ef8b81983dd75b310739dd") {
-        for(let $i = 0; $i < 24; $i += 1){
+    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(25);
+    if ($[0] !== "c160adce85a092d6757830231385bd5ecd6dd130543b9fc11bedb5a756289bea") {
+        for(let $i = 0; $i < 25; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "a961386f9f8c8a0c3fa6c055b90a8689b6fbb60105ef8b81983dd75b310739dd";
+        $[0] = "c160adce85a092d6757830231385bd5ecd6dd130543b9fc11bedb5a756289bea";
     }
     const [socket, setSocket] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [localStream, setLocalStream] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
@@ -75,15 +75,22 @@ function useWebRTC(roomId) {
                     }
                 };
                 pc.ontrack = (event_0)=>{
-                    console.log("Received remote track from", userId);
+                    console.log("Received remote track from", userId, "Track kind:", event_0.track.kind);
                     setPeers({
                         "useWebRTC[createPeer > <anonymous> > setPeers()]": (prev)=>{
                             const existing = prev.find({
                                 "useWebRTC[createPeer > <anonymous> > setPeers() > prev.find()]": (p)=>p.id === userId
                             }["useWebRTC[createPeer > <anonymous> > setPeers() > prev.find()]"]);
                             if (existing) {
-                                return prev;
+                                console.log("Updating existing peer stream for", userId);
+                                return prev.map({
+                                    "useWebRTC[createPeer > <anonymous> > setPeers() > prev.map()]": (p_0)=>p_0.id === userId ? {
+                                            ...p_0,
+                                            stream: event_0.streams[0]
+                                        } : p_0
+                                }["useWebRTC[createPeer > <anonymous> > setPeers() > prev.map()]"]);
                             }
+                            console.log("Adding new peer to state:", userId);
                             return [
                                 ...prev,
                                 {
@@ -96,17 +103,23 @@ function useWebRTC(roomId) {
                     }["useWebRTC[createPeer > <anonymous> > setPeers()]"]);
                 };
                 if (initiator) {
+                    console.log("Creating OFFER for peer:", userId);
                     pc.createOffer().then({
                         "useWebRTC[createPeer > (anonymous)()]": (offer)=>{
-                            pc.setLocalDescription(offer);
+                            console.log("Offer created, setting local description");
+                            return pc.setLocalDescription(offer);
+                        }
+                    }["useWebRTC[createPeer > (anonymous)()]"]).then({
+                        "useWebRTC[createPeer > (anonymous)()]": ()=>{
+                            console.log("Sending OFFER to:", userId);
                             socket_0.emit("offer", {
                                 roomId,
-                                sdp: offer,
+                                sdp: pc.localDescription,
                                 to: userId,
                                 from: socket_0.id
                             });
                         }
-                    }["useWebRTC[createPeer > (anonymous)()]"]);
+                    }["useWebRTC[createPeer > (anonymous)()]"]).catch(_useWebRTCCreatePeerAnonymous);
                 }
                 return pc;
             }
@@ -118,16 +131,43 @@ function useWebRTC(roomId) {
     }
     const createPeer = t2;
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isConnected, setIsConnected] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     let t3;
     let t4;
     if ($[5] !== createPeer || $[6] !== roomId) {
         t3 = ({
             "useWebRTC[useEffect()]": ()=>{
-                const s = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["default"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001", {
-                    path: "/socket.io"
+                const socketUrl = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+                console.log("Connecting to socket at:", socketUrl);
+                const s = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["default"])(socketUrl, {
+                    path: "/socket.io",
+                    transports: [
+                        "websocket",
+                        "polling"
+                    ]
                 });
                 setSocket(s);
                 socketRef.current = s;
+                const onConnect = {
+                    "useWebRTC[useEffect() > onConnect]": ()=>{
+                        console.log("Socket connected with ID:", s.id);
+                        console.log("Joining room:", roomId);
+                        setIsConnected(true);
+                        s.emit("join-room", roomId, s.id);
+                    }
+                }["useWebRTC[useEffect() > onConnect]"];
+                const onDisconnect = {
+                    "useWebRTC[useEffect() > onDisconnect]": ()=>{
+                        console.log("Socket disconnected");
+                        setIsConnected(false);
+                    }
+                }["useWebRTC[useEffect() > onDisconnect]"];
+                if (s.connected) {
+                    onConnect();
+                } else {
+                    s.on("connect", onConnect);
+                }
+                s.on("disconnect", onDisconnect);
                 navigator.mediaDevices.getUserMedia({
                     audio: true,
                     video: true
@@ -135,31 +175,39 @@ function useWebRTC(roomId) {
                     "useWebRTC[useEffect() > (anonymous)()]": (stream_0)=>{
                         setLocalStream(stream_0);
                         localStreamRef.current = stream_0;
-                        s.emit("join-room", roomId, s.id);
                         s.on("user-connected", {
                             "useWebRTC[useEffect() > (anonymous)() > s.on()]": (userId_0)=>{
-                                console.log("User connected:", userId_0);
+                                console.log("User connected event received for:", userId_0);
+                                console.log("I am initiator, creating peer...");
                                 createPeer(userId_0, true, stream_0, s);
                             }
                         }["useWebRTC[useEffect() > (anonymous)() > s.on()]"]);
                         s.on("offer", {
                             "useWebRTC[useEffect() > (anonymous)() > s.on()]": async (data)=>{
+                                console.log("Received OFFER from:", data.from);
                                 const pc_0 = createPeer(data.from, false, stream_0, s);
                                 await pc_0.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                                console.log("Remote description set (Offer)");
                                 const answer = await pc_0.createAnswer();
                                 await pc_0.setLocalDescription(answer);
+                                console.log("Sending ANSWER to:", data.from);
                                 s.emit("answer", {
                                     roomId,
                                     sdp: answer,
-                                    to: data.from
+                                    to: data.from,
+                                    from: s.id
                                 });
                             }
                         }["useWebRTC[useEffect() > (anonymous)() > s.on()]"]);
                         s.on("answer", {
                             "useWebRTC[useEffect() > (anonymous)() > s.on()]": async (data_0)=>{
+                                console.log("Received ANSWER from:", data_0.from);
                                 const pc_1 = peersRef.current[data_0.from];
                                 if (pc_1) {
                                     await pc_1.setRemoteDescription(new RTCSessionDescription(data_0.sdp));
+                                    console.log("Remote description set (Answer)");
+                                } else {
+                                    console.warn("Received Answer for unknown peer:", data_0.from);
                                 }
                             }
                         }["useWebRTC[useEffect() > (anonymous)() > s.on()]"]);
@@ -179,16 +227,16 @@ function useWebRTC(roomId) {
                                 }
                                 setPeers({
                                     "useWebRTC[useEffect() > (anonymous)() > s.on() > setPeers()]": (prev_0)=>prev_0.filter({
-                                            "useWebRTC[useEffect() > (anonymous)() > s.on() > setPeers() > prev_0.filter()]": (p_0)=>p_0.id !== userId_1
+                                            "useWebRTC[useEffect() > (anonymous)() > s.on() > setPeers() > prev_0.filter()]": (p_1)=>p_1.id !== userId_1
                                         }["useWebRTC[useEffect() > (anonymous)() > s.on() > setPeers() > prev_0.filter()]"])
                                 }["useWebRTC[useEffect() > (anonymous)() > s.on() > setPeers()]"]);
                             }
                         }["useWebRTC[useEffect() > (anonymous)() > s.on()]"]);
                     }
                 }["useWebRTC[useEffect() > (anonymous)()]"]).catch({
-                    "useWebRTC[useEffect() > (anonymous)()]": (err)=>{
-                        console.error("Failed to get local media", err);
-                        setError(err);
+                    "useWebRTC[useEffect() > (anonymous)()]": (err_0)=>{
+                        console.error("Failed to get local media", err_0);
+                        setError(err_0);
                     }
                 }["useWebRTC[useEffect() > (anonymous)()]"]);
                 return ()=>{
@@ -327,8 +375,8 @@ function useWebRTC(roomId) {
                         }
                     }
                 } catch (t9) {
-                    const err_0 = t9;
-                    console.error("Failed to share screen", err_0);
+                    const err_1 = t9;
+                    console.error("Failed to share screen", err_1);
                 }
             }
         })["useWebRTC[shareScreen]"];
@@ -355,7 +403,7 @@ function useWebRTC(roomId) {
     }
     const allPeers = t9;
     let t10;
-    if ($[16] !== allPeers || $[17] !== error || $[18] !== isAudioEnabled || $[19] !== isScreenSharing || $[20] !== isVideoEnabled || $[21] !== localStream || $[22] !== socket) {
+    if ($[16] !== allPeers || $[17] !== error || $[18] !== isAudioEnabled || $[19] !== isConnected || $[20] !== isScreenSharing || $[21] !== isVideoEnabled || $[22] !== localStream || $[23] !== socket) {
         t10 = {
             localStream,
             peers: allPeers,
@@ -367,22 +415,24 @@ function useWebRTC(roomId) {
             isVideoEnabled,
             shareScreen,
             stopScreenShare,
-            isScreenSharing
+            isScreenSharing,
+            isConnected
         };
         $[16] = allPeers;
         $[17] = error;
         $[18] = isAudioEnabled;
-        $[19] = isScreenSharing;
-        $[20] = isVideoEnabled;
-        $[21] = localStream;
-        $[22] = socket;
-        $[23] = t10;
+        $[19] = isConnected;
+        $[20] = isScreenSharing;
+        $[21] = isVideoEnabled;
+        $[22] = localStream;
+        $[23] = socket;
+        $[24] = t10;
     } else {
-        t10 = $[23];
+        t10 = $[24];
     }
     return t10;
 }
-_s(useWebRTC, "LamyfE7VYmsIcKc2XWzyJrLT0EE=");
+_s(useWebRTC, "NEREnfsUwptFa85S1gUMkSL+Sjc=");
 function _useWebRTCShareScreenAnonymousAnonymous(s_1) {
     return s_1.track?.kind === "video";
 }
@@ -394,6 +444,9 @@ function _useWebRTCUseEffectAnonymousAnonymous2(pc_3) {
 }
 function _useWebRTCUseEffectAnonymousAnonymous(t) {
     return t.stop();
+}
+function _useWebRTCCreatePeerAnonymous(err) {
+    console.error("Error creating/sending offer:", err);
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);

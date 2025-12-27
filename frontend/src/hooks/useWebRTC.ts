@@ -38,17 +38,14 @@ export function useWebRTC(roomId: string, username: string) {
     const localStreamRef = useRef<MediaStream | null>(null);
     const socketRef = useRef<Socket | null>(null);
 
-    // Helper to create a peer connection
     const createPeer = useCallback((userId: string, initiator: boolean, stream: MediaStream, socket: Socket) => {
         const pc = new RTCPeerConnection(STUN_SERVERS);
         peersRef.current[userId] = pc;
 
-        // Add local tracks
         stream.getTracks().forEach(track => {
             pc.addTrack(track, stream);
         });
 
-        // Handle ICE candidates
         pc.onicecandidate = (event) => {
             if (event.candidate) {
                 socket.emit('ice-candidate', {
@@ -60,14 +57,12 @@ export function useWebRTC(roomId: string, username: string) {
             }
         };
 
-        // Handle remote stream
         pc.ontrack = (event) => {
             console.log("Received remote track from", userId, "Track kind:", event.track.kind);
             setPeers(prev => {
                 const existing = prev.find(p => p.id === userId);
                 if (existing) {
                     console.log("Updating existing peer stream for", userId);
-                    // Update the existing peer with new stream
                     return prev.map(p => p.id === userId ? { ...p, stream: event.streams[0] } : p);
                 }
                 console.log("Adding new peer to state:", userId);
@@ -75,7 +70,6 @@ export function useWebRTC(roomId: string, username: string) {
             });
         };
 
-        // Create Offer
         if (initiator) {
             console.log('Creating OFFER for peer:', userId);
             pc.createOffer().then(offer => {
@@ -100,10 +94,6 @@ export function useWebRTC(roomId: string, username: string) {
     const [error, setError] = useState<Error | null>(null);
     const [isConnected, setIsConnected] = useState(false);
 
-    // ... refs ...
-
-    // Same createPeer ...
-
     useEffect(() => {
         let isMounted = true;
         const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -116,7 +106,6 @@ export function useWebRTC(roomId: string, username: string) {
         setSocket(s);
         socketRef.current = s;
 
-        // Socket Connection Handlers
         const onConnect = () => {
             console.log('Socket connected with ID:', s.id);
             console.log('Joining room:', roomId);
@@ -137,11 +126,9 @@ export function useWebRTC(roomId: string, username: string) {
 
         s.on('disconnect', onDisconnect);
 
-        // Get Local Media
-        // Try with simple constraints first
         navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: true // Removed 1280x720 constraint to rule out hardware incompatibility
+            video: true
         }).then(stream => {
             if (!isMounted) {
                 stream.getTracks().forEach(track => track.stop());
@@ -149,15 +136,7 @@ export function useWebRTC(roomId: string, username: string) {
             }
             setLocalStream(stream);
             localStreamRef.current = stream;
-            // ... (rest of logic same) ...
 
-            // REMOVED: setPeers(prev => [...prev, { id: 'local', stream: stream, isLocal: true }]);
-            // We shouldn't add local stream to 'peers' state to avoid duplicates and sync issues.
-            // We will combine it in the hook return.
-
-            // Handled by onConnect above
-
-            // Socket Events
             s.on('user-connected', (userId: string) => {
                 console.log('User connected event received for:', userId);
                 console.log('I am initiator, creating peer...');
@@ -246,7 +225,6 @@ export function useWebRTC(roomId: string, username: string) {
 
     const stopScreenShare = useCallback(async () => {
         if (localStreamRef.current) {
-            // 1. Stop the screen share track to ensure the browser UI updates
             const screenTrack = localStreamRef.current.getVideoTracks()[0];
             if (screenTrack) {
                 screenTrack.stop();
@@ -254,14 +232,11 @@ export function useWebRTC(roomId: string, username: string) {
             }
 
             try {
-                // 2. Re-acquire the camera stream
                 const newStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 const newVideoTrack = newStream.getVideoTracks()[0];
 
-                // 3. Add the new camera track to the local stream
                 localStreamRef.current.addTrack(newVideoTrack);
 
-                // 4. Update all peer connections to send the new track
                 Object.values(peersRef.current).forEach(pc => {
                     const sender = pc.getSenders().find(s => s.track?.kind === 'video');
                     if (sender) {
@@ -269,17 +244,13 @@ export function useWebRTC(roomId: string, username: string) {
                     }
                 });
 
-                // 5. Update state
                 setIsScreenSharing(false);
                 originalVideoTrackRef.current = null;
 
-                // 6. Force UI update by creating a new MediaStream reference
-                // This ensures the video element srcObject gets refreshed
                 setLocalStream(new MediaStream(localStreamRef.current.getTracks()));
 
             } catch (e) {
                 console.error("Failed to restore camera", e);
-                // Fallback: Just update state so UI isn't stuck in "sharing" mode
                 setIsScreenSharing(false);
             }
         }
@@ -333,14 +304,11 @@ export function useWebRTC(roomId: string, username: string) {
             timestamp: Date.now()
         };
 
-        // Add own message to local state
         setChatMessages(prev => [...prev, chatMessage]);
 
-        // Broadcast to others in room
         socketRef.current.emit('chat-message', { ...chatMessage, roomId });
     }, [roomId, username]);
 
-    // Combine local stream with remote peers for the UI
     const allPeers = localStream
         ? [{ id: 'local', stream: localStream, isLocal: true }, ...peers]
         : peers;

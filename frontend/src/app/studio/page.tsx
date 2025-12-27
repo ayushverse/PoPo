@@ -16,7 +16,6 @@ export default function StudioPage() {
     const [username, setUsername] = useState<string | null>(null);
     const [showChat, setShowChat] = useState(false);
 
-    // Load username from localStorage on mount
     useEffect(() => {
         const savedUsername = localStorage.getItem('popo-username');
         if (savedUsername) {
@@ -29,8 +28,6 @@ export default function StudioPage() {
         localStorage.setItem('popo-username', name);
     };
 
-    // Hardcoded room for demo 'main-studio'
-    // In real app, this would come from params
     const {
         localStream,
         peers,
@@ -48,7 +45,6 @@ export default function StudioPage() {
     } = useWebRTC('main-studio', username || 'Anonymous');
     const { isRecording, startRecording, stopRecording, recordedChunks } = useRecorder();
 
-    // Show username modal if not set
     if (!username) {
         return <UsernameModal onSubmit={handleUsernameSubmit} />;
     }
@@ -88,13 +84,11 @@ export default function StudioPage() {
     };
 
     const handleLeave = () => {
-        // Cleanup handled by hook unmount, just navigate away
         router.push('/');
     };
 
     return (
         <div className="flex flex-col h-[calc(100vh-8rem)] gap-4">
-            {/* Header / Toolbar (optional specific to studio) */}
             <div className="flex items-center justify-between px-2">
                 <div>
                     <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
@@ -110,14 +104,12 @@ export default function StudioPage() {
                 </div>
             </div>
 
-            {/* Main Grid */}
             <div className="flex-1 flex gap-4 overflow-hidden">
                 {/* Video Section */}
                 <div className={`transition-all ${showChat ? 'flex-[3]' : 'flex-1'} bg-gray-100 dark:bg-zinc-900/50 rounded-3xl border border-white/20 overflow-hidden relative`}>
                     <VideoGrid peers={peers} />
                 </div>
 
-                {/* Chat Panel - Desktop */}
                 {showChat && (
                     <div className="hidden md:flex md:flex-[1] h-full rounded-3xl overflow-hidden border border-white/20">
                         <Chat
@@ -128,7 +120,6 @@ export default function StudioPage() {
                     </div>
                 )}
 
-                {/* Chat Panel - Mobile Overlay */}
                 {showChat && (
                     <div className="md:hidden absolute inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end">
                         <div className="w-full h-[70%] bg-white dark:bg-gray-900 rounded-t-3xl overflow-hidden">
@@ -148,9 +139,7 @@ export default function StudioPage() {
                 )}
             </div>
 
-            {/* Bottom Controls */}
             <div className="flex items-center justify-center gap-4 py-4">
-                {/* ... existing controls ... */}
                 <Button
                     variant={isAudioEnabled ? "secondary" : "danger"}
                     size="lg"
@@ -193,7 +182,6 @@ export default function StudioPage() {
                 </Button>
             </div>
 
-            {/* Editor Section */}
             {!isRecording && recordedChunks.length > 0 && <Editor recordedChunks={recordedChunks} />}
         </div>
     );

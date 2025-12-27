@@ -138,10 +138,18 @@ function useWebRTC(roomId) {
         };
         // Handle remote stream
         pc.ontrack = (event)=>{
-            console.log("Received remote track from", userId);
+            console.log("Received remote track from", userId, "Track kind:", event.track.kind);
             setPeers((prev)=>{
                 const existing = prev.find((p)=>p.id === userId);
-                if (existing) return prev;
+                if (existing) {
+                    console.log("Updating existing peer stream for", userId);
+                    // Update the existing peer with new stream
+                    return prev.map((p)=>p.id === userId ? {
+                            ...p,
+                            stream: event.streams[0]
+                        } : p);
+                }
+                console.log("Adding new peer to state:", userId);
                 return [
                     ...prev,
                     {
@@ -154,14 +162,20 @@ function useWebRTC(roomId) {
         };
         // Create Offer
         if (initiator) {
+            console.log('Creating OFFER for peer:', userId);
             pc.createOffer().then((offer)=>{
-                pc.setLocalDescription(offer);
+                console.log('Offer created, setting local description');
+                return pc.setLocalDescription(offer);
+            }).then(()=>{
+                console.log('Sending OFFER to:', userId);
                 socket.emit('offer', {
                     roomId,
-                    sdp: offer,
+                    sdp: pc.localDescription,
                     to: userId,
                     from: socket.id
                 });
+            }).catch((err)=>{
+                console.error('Error creating/sending offer:', err);
             });
         }
         return pc;
@@ -169,15 +183,39 @@ function useWebRTC(roomId) {
         roomId
     ]);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isConnected, setIsConnected] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     // ... refs ...
     // Same createPeer ...
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         let isMounted = true;
-        const s = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2d$debug$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["default"])(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001', {
-            path: '/socket.io'
+        const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        console.log('Connecting to socket at:', socketUrl);
+        const s = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2d$debug$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["default"])(socketUrl, {
+            path: '/socket.io',
+            transports: [
+                'websocket',
+                'polling'
+            ]
         });
         setSocket(s);
         socketRef.current = s;
+        // Socket Connection Handlers
+        const onConnect = ()=>{
+            console.log('Socket connected with ID:', s.id);
+            console.log('Joining room:', roomId);
+            setIsConnected(true);
+            s.emit('join-room', roomId, s.id);
+        };
+        const onDisconnect = ()=>{
+            console.log('Socket disconnected');
+            setIsConnected(false);
+        };
+        if (s.connected) {
+            onConnect();
+        } else {
+            s.on('connect', onConnect);
+        }
+        s.on('disconnect', onDisconnect);
         // Get Local Media
         // Try with simple constraints first
         navigator.mediaDevices.getUserMedia({
@@ -192,26 +230,37 @@ function useWebRTC(roomId) {
             // REMOVED: setPeers(prev => [...prev, { id: 'local', stream: stream, isLocal: true }]);
             // We shouldn't add local stream to 'peers' state to avoid duplicates and sync issues.
             // We will combine it in the hook return.
-            s.emit('join-room', roomId, s.id);
+            // Handled by onConnect above
             // Socket Events
             s.on('user-connected', (userId)=>{
-                console.log('User connected:', userId);
+                console.log('User connected event received for:', userId);
+                console.log('I am initiator, creating peer...');
                 createPeer(userId, true, stream, s);
             });
             s.on('offer', async (data)=>{
+                console.log('Received OFFER from:', data.from);
                 const pc = createPeer(data.from, false, stream, s);
                 await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                console.log('Remote description set (Offer)');
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
+                console.log('Sending ANSWER to:', data.from);
                 s.emit('answer', {
                     roomId,
                     sdp: answer,
-                    to: data.from
+                    to: data.from,
+                    from: s.id
                 });
             });
             s.on('answer', async (data)=>{
+                console.log('Received ANSWER from:', data.from);
                 const pc = peersRef.current[data.from];
-                if (pc) await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                if (pc) {
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    console.log('Remote description set (Answer)');
+                } else {
+                    console.warn('Received Answer for unknown peer:', data.from);
+                }
             });
             s.on('ice-candidate', async (data)=>{
                 const pc = peersRef.current[data.from];
@@ -351,7 +400,8 @@ function useWebRTC(roomId) {
         isVideoEnabled,
         shareScreen,
         stopScreenShare,
-        isScreenSharing
+        isScreenSharing,
+        isConnected
     };
 }
 }),

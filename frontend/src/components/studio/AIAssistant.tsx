@@ -25,9 +25,6 @@ export function AIAssistant({ recordedChunks }: AIAssistantProps) {
             listGeminiModels(key).then(models => {
                 if (models.length > 0) {
                     setAvailableModels(models);
-                    // Check if current model is in list, if not set to first valid one or keep default if looks like a valid alias
-                    // For now, let's stick to our default if it exists, or update if user prefers.
-                    // But actually, seeing the list is better.
                 }
             });
         }
@@ -97,7 +94,6 @@ export function AIAssistant({ recordedChunks }: AIAssistantProps) {
                     onChange={(e) => setModel(e.target.value)}
                     className="w-full p-2 text-sm rounded border bg-white dark:bg-zinc-800 dark:border-white/10"
                 >
-                    {/* Default/Fallback Options if API fetch fails or hasn't happened yet */}
                     {availableModels.length === 0 && (
                         <>
                             <option value="gemini-1.5-flash-002">Gemini 1.5 Flash (Fastest - 002)</option>
@@ -106,7 +102,6 @@ export function AIAssistant({ recordedChunks }: AIAssistantProps) {
                         </>
                     )}
 
-                    {/* Dynamic Options */}
                     {availableModels.map((m) => (
                         <option key={m.name} value={m.name}>
                             {m.displayName}

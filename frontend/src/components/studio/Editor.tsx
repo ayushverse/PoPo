@@ -44,26 +44,18 @@ export function Editor({ recordedChunks }: EditorProps) {
             const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
             const videoData = await videoBlob.arrayBuffer();
 
-            // Write file to FFmpeg's virtual file system
             await ffmpeg.writeFile('input.webm', new Uint8Array(videoData));
 
-            // Transcode to MP4 
-            // -c:v copy: Copy video stream (likely VP9) to MP4 container.
-            // -c:a aac: Re-encode audio to AAC for compatibility.
-            // -strict experimental: Often needed for aac in some ffmpeg versions (though usually fine in recent ones).
             await ffmpeg.exec(['-i', 'input.webm', '-c:v', 'copy', '-c:a', 'aac', 'output.mp4']);
 
-            // Read the result
             const data = await ffmpeg.readFile('output.mp4');
 
-            // Download
             const url = URL.createObjectURL(new Blob([data as any], { type: 'video/mp4' }));
             const a = document.createElement('a');
             a.href = url;
             a.download = 'record-final.mp4';
             a.click();
 
-            // Cleanup
             await ffmpeg.deleteFile('input.webm');
             await ffmpeg.deleteFile('output.mp4');
             URL.revokeObjectURL(url);
@@ -102,9 +94,7 @@ export function Editor({ recordedChunks }: EditorProps) {
                     {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 </Button>
                 <div className="flex-1 h-12 bg-gray-100 dark:bg-zinc-800 rounded-lg relative overflow-hidden">
-                    {/* Mock Timeline Track */}
                     <div className="absolute inset-y-2 left-2 right-2 bg-indigo-500/20 rounded"></div>
-                    {/* Playhead */}
                     <div className="absolute top-0 bottom-0 left-[10%] w-0.5 bg-red-500"></div>
                 </div>
                 <Button onClick={processVideo} disabled={!loaded || !videoUrl} size="sm" variant="secondary">
@@ -114,7 +104,6 @@ export function Editor({ recordedChunks }: EditorProps) {
                     <Download className="w-4 h-4 mr-2" /> Export
                 </Button>
             </div>
-            {/* AI Assistant */}
             <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                 <AIAssistant recordedChunks={recordedChunks} />
             </div>

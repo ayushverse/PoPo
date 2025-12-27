@@ -7,7 +7,6 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 import { v4 as uuidv4 } from 'uuid';
 
-// Helper to save buffer to temp file
 async function saveToTemp(buffer: Buffer): Promise<string> {
     const filename = `upload-${uuidv4()}.webm`;
     const filepath = join(tmpdir(), filename);
@@ -25,18 +24,15 @@ export async function processVideoWithGemini(formData: FormData, apiKey: string,
         const fileManager = new GoogleAIFileManager(apiKey);
         const genAI = new GoogleGenerativeAI(apiKey);
 
-        // 1. Save to temp disk (FileManager needs local path)
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         const tempPath = await saveToTemp(buffer);
 
-        // 2. Upload to Google AI
         const uploadResult = await fileManager.uploadFile(tempPath, {
             mimeType: file.type || 'video/webm',
             displayName: "Studio Recording",
         });
 
-        // 3. Wait for processing (Video takes time)
         let fileState = await fileManager.getFile(uploadResult.file.name);
         while (fileState.state === 'PROCESSING') {
             await new Promise(resolve => setTimeout(resolve, 2000));
@@ -47,7 +43,6 @@ export async function processVideoWithGemini(formData: FormData, apiKey: string,
             throw new Error("Video processing failed.");
         }
 
-        // 4. Generate Content
         const model = genAI.getGenerativeModel({ model: modelName || "gemini-1.5-flash-latest" });
         const result = await model.generateContent([
             prompt,
@@ -59,9 +54,7 @@ export async function processVideoWithGemini(formData: FormData, apiKey: string,
             },
         ]);
 
-        // Cleanup
         await unlink(tempPath).catch(e => console.error("Temp cleanup failed", e));
-        // await fileManager.deleteFile(uploadResult.file.name); // Optional: keep for cache or delete
 
         return result.response.text();
 
@@ -84,7 +77,6 @@ export async function listGeminiModels(apiKey: string) {
         const data = await response.json();
         if (!data.models) return [];
 
-        // Filter for models that support content generation and are stable/latest
         return data.models
             .filter((m: any) => m.supportedGenerationMethods?.includes("generateContent"))
             .map((m: any) => ({

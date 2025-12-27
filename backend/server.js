@@ -68,7 +68,6 @@ httpServer.listen(port, (err) => {
   if (err) throw err;
   console.log(`> Socket server ready on http://${hostname}:${port}`);
 
-  // Self-ping every 10 minutes to prevent Render cold start (free tier only)
   if (process.env.NODE_ENV === 'production' && process.env.BACKEND_URL) {
     setInterval(() => {
       fetch(`${process.env.BACKEND_URL}/health`)
