@@ -10,6 +10,10 @@ interface AIAssistantProps {
     recordedChunks: Blob[];
 }
 
+/**
+ * AI Assistant component for video processing with Google Gemini API
+ * Provides show notes generation and smart clip identification from recorded video
+ */
 export function AIAssistant({ recordedChunks }: AIAssistantProps) {
     const [apiKey, setApiKey] = useState('');
     const [showKeyInput, setShowKeyInput] = useState(false);
@@ -19,6 +23,7 @@ export function AIAssistant({ recordedChunks }: AIAssistantProps) {
     const [activeTab, setActiveTab] = useState<'summary' | 'clips'>('summary');
     const [availableModels, setAvailableModels] = useState<{ name: string, displayName: string }[]>([]);
 
+    // Fetch available Gemini models when API key changes
     useEffect(() => {
         const key = apiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
         if (key) {
@@ -30,7 +35,12 @@ export function AIAssistant({ recordedChunks }: AIAssistantProps) {
         }
     }, [apiKey]);
 
+    /**
+     * Process video with Gemini AI for show notes or clip identification
+     * @param type - 'summary' for show notes, 'clips' for viral clip suggestions
+     */
     const handleAction = async (type: 'summary' | 'clips') => {
+        // Ensure API key is available before processing
         if (!apiKey && !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
             setShowKeyInput(true);
             return;
@@ -40,15 +50,18 @@ export function AIAssistant({ recordedChunks }: AIAssistantProps) {
         setActiveTab(type);
 
         const key = apiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
+        // Create appropriate prompt based on requested action type
         const prompt = type === 'summary'
             ? "Generate a catchy Title, a short abstract/summary for social media, and 5 hashtags for this video."
             : "Analyze this video and identify 3 potential viral highlight clips. Return JSON format with { start: 'MM:SS', end: 'MM:SS', description: 'string' } for each clip.";
 
         try {
+            // Combine recorded chunks into a single video blob
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
             const formData = new FormData();
             formData.append('file', blob, 'recording.webm');
 
+            // Send to Gemini API for processing
             const text = await processVideoWithGemini(formData, key, model, prompt);
             setResult(text);
         } catch (err: any) {

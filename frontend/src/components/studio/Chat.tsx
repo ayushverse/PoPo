@@ -5,6 +5,7 @@ import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
+// Message structure for real-time chat
 export type ChatMessage = {
     id: string;
     userId: string;
@@ -19,14 +20,20 @@ interface ChatProps {
     currentUserId: string;
 }
 
+/**
+ * Real-time chat component for studio collaboration
+ * Supports auto-scroll, keyboard shortcuts, and message formatting
+ */
 export function Chat({ messages, onSendMessage, currentUserId }: ChatProps) {
     const [inputMessage, setInputMessage] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    // Auto-scroll to latest message
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    // Scroll when new messages arrive
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
@@ -38,6 +45,7 @@ export function Chat({ messages, onSendMessage, currentUserId }: ChatProps) {
         }
     };
 
+    // Send message on Enter, allow Shift+Enter for new line
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -45,6 +53,7 @@ export function Chat({ messages, onSendMessage, currentUserId }: ChatProps) {
         }
     };
 
+    // Format timestamp to readable time (HH:MM)
     const formatTime = (timestamp: number) => {
         return new Date(timestamp).toLocaleTimeString('en-US', {
             hour: '2-digit',
@@ -75,8 +84,8 @@ export function Chat({ messages, onSendMessage, currentUserId }: ChatProps) {
                         >
                             <div
                                 className={`max-w-[80%] rounded-lg px-4 py-2 ${msg.userId === currentUserId
-                                        ? 'bg-indigo-500 text-white'
-                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                                    ? 'bg-indigo-500 text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
                                     }`}
                             >
                                 {msg.userId !== currentUserId && (

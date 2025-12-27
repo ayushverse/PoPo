@@ -11,11 +11,16 @@ import { Mic, Video, MonitorUp, PhoneOff, Circle, MicOff, VideoOff, MessageSquar
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+/**
+ * Main studio page for live podcast recording with WebRTC
+ * Features: Multi-user video, screen sharing, recording, real-time chat, and AI editing
+ */
 export default function StudioPage() {
     const router = useRouter();
     const [username, setUsername] = useState<string | null>(null);
     const [showChat, setShowChat] = useState(false);
 
+    // Load saved username from localStorage on mount
     useEffect(() => {
         const savedUsername = localStorage.getItem('popo-username');
         if (savedUsername) {
@@ -28,6 +33,7 @@ export default function StudioPage() {
         localStorage.setItem('popo-username', name);
     };
 
+    // Initialize WebRTC for real-time peer-to-peer connections
     const {
         localStream,
         peers,
@@ -43,12 +49,16 @@ export default function StudioPage() {
         chatMessages,
         sendMessage
     } = useWebRTC('main-studio', username || 'Anonymous');
+
+    // Recorder hook for local recording of the stream
     const { isRecording, startRecording, stopRecording, recordedChunks } = useRecorder();
 
+    // Show username modal if not set
     if (!username) {
         return <UsernameModal onSubmit={handleUsernameSubmit} />;
     }
 
+    // Show error UI if media access failed
     if (error) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-center p-8 space-y-4">
@@ -75,6 +85,7 @@ export default function StudioPage() {
         );
     }
 
+    // Toggle recording of local stream
     const handleRecordToggle = () => {
         if (isRecording) {
             stopRecording();

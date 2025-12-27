@@ -5,7 +5,12 @@ import { Play, Star, TrendingUp, Users } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 
+/**
+ * Explore page showcasing demo videos and tutorials for PoPo podcast studio
+ * Features trending content and a featured video showcase
+ */
 export default function Explore() {
+    // Demo video data - in production, this would come from API/CMS
     const demos = [
         {
             id: 1,
