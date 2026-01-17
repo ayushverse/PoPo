@@ -59,7 +59,7 @@ See `.env.example` (if available) for required variables.
 - **Frontend**: Next.js, React, Tailwind CSS, Lucide React
 - **Backend**: Node.js, Express, Socket.io
 - **Media Processing**: FFmpeg for video processing and exporting
-- **Deployment**: Vercel (Frontend), Render/Heroku (Backend - recommended)
+- **Deployment**: Vercel (Frontend), Render (Backend)
 
 ## License
 
