@@ -73,6 +73,6 @@ httpServer.listen(port, (err) => {
       fetch(`${process.env.BACKEND_URL}/health`)
         .then(res => console.log('[KEEP-ALIVE] Ping successful'))
         .catch(err => console.error('[KEEP-ALIVE] Ping failed:', err.message));
-    }, 10 * 60 * 1000); // Every 10 minutes
+    }, 10 * 60 * 1000); // Every 10 minutes it will ping an check for health (heartbeating)
   }
 });
