@@ -22,7 +22,7 @@ export default function Explore() {
         },
         {
             id: 2,
-            title: 'Editing with AI',
+            title: 'Pro Editing Tips',
             author: 'Sarah Creator',
             views: '8.5k',
             duration: '3:15',
@@ -71,7 +71,7 @@ export default function Explore() {
                     <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black to-transparent">
                         <span className="inline-block px-3 py-1 bg-cyber-pink text-white text-[10px] font-black tracking-[0.2em] mb-2 uppercase">Priority Alpha</span>
                         <h2 className="text-3xl font-black italic tracking-tighter text-white mb-2 uppercase">PoPo Studio Tour 2026</h2>
-                        <p className="text-gray-400 font-mono text-sm max-w-md">Comprehensive walkthrough of neural processing & studio synchronization.</p>
+                        <p className="text-gray-400 font-mono text-sm max-w-md">Comprehensive walkthrough of video processing & studio synchronization.</p>
                     </div>
                 </div>
             </motion.div>

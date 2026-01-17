@@ -1,11 +1,11 @@
 # PoPo - Podcast Studio
 
-PoPo is a comprehensive podcasting platform designed to streamline the recording and editing process. It features real-time video capabilities, collaborative tools, and AI-powered enhancements to help creators produce high-quality content with ease.
+PoPo is a comprehensive podcasting platform designed to streamline the recording and editing process. It features real-time video capabilities and collaborative tools to help creators produce high-quality content with ease.
 
 ## Features
 
 - **Real-time Studio**: WebRTC-based video and audio recording for seamless remote collaboration.
-- **AI Integration**: Powered by Google Gemini to generate show notes, identify smart clips, and assist in editing.
+- **Collaborative Tools**: Integrated chat and shared workspace for smooth production.
 - **Modern UI**: Built with Next.js and Tailwind CSS for a responsive and premium user experience.
 - **Backend**: Express.js and Socket.io server for real-time signaling and data management.
 
@@ -51,14 +51,14 @@ The project is organized into two main distinct parts:
 
 ## Environment Variables
 
-Create a `.env.local` file in the `frontend` directory for your client-side keys (e.g., Gemini API key).
+Create a `.env.local` file in the `frontend` directory for your client-side keys.
 See `.env.example` (if available) for required variables.
 
 ## Technologies Used
 
 - **Frontend**: Next.js, React, Tailwind CSS, Lucide React
 - **Backend**: Node.js, Express, Socket.io
-- **AI**: Google Gemini API
+- **Media Processing**: FFmpeg for video processing and exporting
 - **Deployment**: Vercel (Frontend), Render/Heroku (Backend - recommended)
 
 ## License

@@ -5,7 +5,6 @@ import { useFFmpeg } from '@/hooks/useFFmpeg';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Play, Pause, Scissors, Download, Loader2 } from 'lucide-react';
-import { AIAssistant } from './AIAssistant';
 
 interface EditorProps {
     recordedChunks: Blob[];
@@ -103,9 +102,6 @@ export function Editor({ recordedChunks }: EditorProps) {
                 <Button disabled={!videoUrl} size="sm" variant="primary">
                     <Download className="w-4 h-4 mr-2" /> Export
                 </Button>
-            </div>
-            <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                <AIAssistant recordedChunks={recordedChunks} />
             </div>
         </Card>
     );

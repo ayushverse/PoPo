@@ -53,7 +53,7 @@ export default function Home() {
         {[
           {
             icon: Waves,
-            title: "NEURAL AUDIO",
+            title: "PRO AUDIO",
             color: "text-cyber-cyan",
             description: "Advanced noise suppression and local recording for studio-quality sound."
           },
@@ -65,9 +65,9 @@ export default function Home() {
           },
           {
             icon: Cpu,
-            title: "AI CORE",
+            title: "PRO STUDIO",
             color: "text-cyber-yellow",
-            description: "Automated editing, mixing, and transcriptions in seconds."
+            description: "Professional grade recording tools for creators of all levels."
           }
         ].map((feature, i) => (
           <motion.div

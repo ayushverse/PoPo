@@ -13,7 +13,7 @@ import { useState, useEffect } from 'react';
 
 /**
  * Main studio page for live podcast recording with WebRTC
- * Features: Multi-user video, screen sharing, recording, real-time chat, and AI editing
+ * Features: Multi-user video, screen sharing, recording, and real-time chat
  */
 export default function StudioPage() {
     const router = useRouter();
