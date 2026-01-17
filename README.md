@@ -1,4 +1,4 @@
-# PoPo - AI Powered Podcast Studio
+# PoPo - Podcast Studio
 
 PoPo is a comprehensive podcasting platform designed to streamline the recording and editing process. It features real-time video capabilities, collaborative tools, and AI-powered enhancements to help creators produce high-quality content with ease.
 
