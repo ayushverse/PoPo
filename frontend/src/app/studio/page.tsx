@@ -102,15 +102,15 @@ export default function StudioPage() {
         <div className="flex flex-col h-[calc(100vh-8rem)] gap-4">
             <div className="flex items-center justify-between px-2">
                 <div>
-                    <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
-                        Live Studio
+                    <h1 className="text-2xl font-black italic tracking-tighter text-white uppercase">
+                        Studio <span className="text-cyber-cyan">Interface</span>
                     </h1>
-                    <p className="text-sm text-gray-500">Room: main-studio</p>
+                    <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">[NODE: MAIN-STUDIO]</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div className="px-3 py-1 rounded-full bg-red-500/10 text-red-500 text-xs font-semibold animate-pulse">
-                        ● Live
+                    <div className="px-3 py-1 border border-cyber-pink/50 text-cyber-pink text-[10px] font-black uppercase tracking-[0.2em] animate-pulse bg-cyber-pink/10">
+                        [TRANSMITTING]
                     </div>
                 </div>
             </div>

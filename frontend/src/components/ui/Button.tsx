@@ -12,7 +12,7 @@ function cn(...inputs: ClassValue[]) {
 import React from 'react';
 
 interface ButtonProps extends HTMLMotionProps<"button"> {
-    variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+    variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'cyber';
     size?: 'sm' | 'md' | 'lg';
     isLoading?: boolean;
     children: React.ReactNode;
@@ -28,10 +28,11 @@ export function Button({
     ...props
 }: ButtonProps) {
     const variants = {
-        primary: 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-500/25',
-        secondary: 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700',
-        ghost: 'bg-transparent hover:bg-black/5 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300',
-        danger: 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/25',
+        primary: 'bg-cyber-cyan text-cyber-black hover:bg-white shadow-[0_0_15px_rgba(0,255,255,0.5)]',
+        secondary: 'bg-transparent text-cyber-cyan border border-cyber-cyan hover:bg-cyber-cyan/10',
+        ghost: 'bg-transparent hover:bg-cyber-cyan/5 text-gray-300',
+        danger: 'bg-cyber-pink text-white hover:bg-pink-400 shadow-[0_0_15px_rgba(255,0,255,0.5)]',
+        cyber: 'bg-cyber-yellow text-cyber-black hover:bg-white cyber-button-clip font-black italic uppercase tracking-tighter',
     };
 
     const sizes = {
@@ -42,10 +43,11 @@ export function Button({
 
     return (
         <motion.button
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, x: variant === 'cyber' ? 5 : 0 }}
             whileTap={{ scale: 0.98 }}
             className={cn(
-                'inline-flex items-center justify-center rounded-xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
+                'inline-flex items-center justify-center rounded-xl font-medium transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
+                variant === 'cyber' ? '' : 'rounded-xl',
                 variants[variant],
                 sizes[size],
                 className

@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3530f587-f49b-4b01-9f7f-c7aafc802642" name="Changes" comment="" />
+    <list default="true" id="3530f587-f49b-4b01-9f7f-c7aafc802642" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -66,10 +68,21 @@
       <workItem from="1766776575285" duration="86000" />
       <workItem from="1766777634849" duration="26000" />
       <workItem from="1766777706071" duration="1330000" />
+      <workItem from="1768488510640" duration="8000" />
+      <workItem from="1768488533013" duration="8000" />
+      <workItem from="1768488573958" duration="3000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

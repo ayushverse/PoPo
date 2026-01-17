@@ -8,14 +8,21 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export function Card({ className, children, ...props }: HTMLMotionProps<"div">) {
+interface CardProps extends HTMLMotionProps<"div"> {
+    isCyber?: boolean;
+}
+
+export function Card({ className, children, isCyber, ...props }: CardProps) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className={cn(
-                'bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-2xl shadow-xl p-6',
+                'backdrop-blur-xl border transition-all duration-500',
+                isCyber
+                    ? 'bg-cyber-black/90 border-cyber-cyan/50 cyber-border p-8'
+                    : 'bg-zinc-900/80 border-white/5 rounded-2xl p-6',
                 className
             )}
             {...props}

@@ -11,27 +11,27 @@ export function Header() {
             animate={{ y: 0 }}
             className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
         >
-            <div className="max-w-7xl mx-auto backdrop-blur-md bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10 rounded-2xl shadow-lg flex items-center justify-between px-6 py-3">
+            <div className="max-w-7xl mx-auto backdrop-blur-xl bg-cyber-black/80 border border-cyber-cyan/30 rounded-none cyber-border flex items-center justify-between px-8 py-4">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl group-hover:scale-110 transition-transform">
-                        <Mic className="text-white w-5 h-5" />
+                <Link href="/" className="flex items-center gap-3 group">
+                    <div className="p-2 bg-cyber-cyan rounded-none group-hover:bg-cyber-pink transition-colors">
+                        <Mic className="text-cyber-black w-6 h-6" />
                     </div>
-                    <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
-                        PoPo Studio
+                    <span className="text-xl font-black italic tracking-tighter text-white uppercase">
+                        PoPo <span className="text-cyber-cyan group-hover:text-cyber-pink transition-colors">Studio</span>
                     </span>
                 </Link>
 
                 {/* Navigation */}
-                <nav className="hidden md:flex items-center gap-8">
+                <nav className="hidden md:flex items-center gap-10">
                     {[
-                        { name: 'Studio', href: '/studio', icon: Radio },
-                        { name: 'Explore', href: '/explore', icon: Search },
+                        { name: 'Studio', href: '/studio', icon: Radio, color: 'hover:text-cyber-cyan' },
+                        { name: 'Explore', href: '/explore', icon: Search, color: 'hover:text-cyber-pink' },
                     ].map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
+                            className={`flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-gray-400 ${item.color} transition-colors`}
                         >
                             <item.icon className="w-4 h-4" />
                             {item.name}
@@ -40,15 +40,15 @@ export function Header() {
                 </nav>
 
                 {/* Actions */}
-                <div className="flex items-center gap-4">
-                    <button className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
-                        <User className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                <div className="flex items-center gap-6">
+                    <button className="p-2 hover:bg-cyber-cyan/10 rounded-none transition-colors border border-transparent hover:border-cyber-cyan/30">
+                        <User className="w-5 h-5 text-cyber-cyan" />
                     </button>
                     <Link
                         href="/studio"
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-lg shadow-indigo-500/20"
+                        className="px-6 py-2 bg-cyber-yellow text-cyber-black text-xs font-black uppercase tracking-widest cyber-button-clip hover:bg-white transition-colors shadow-lg shadow-cyber-yellow/20"
                     >
-                        Start Recording
+                        Live Session
                     </Link>
                 </div>
             </div>

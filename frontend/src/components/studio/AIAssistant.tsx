@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Sparkles, FileText, Film, Loader2, Key } from 'lucide-react';
+import { Cpu, FileText, Film, Loader2, Key } from 'lucide-react';
 import { processVideoWithGemini, listGeminiModels } from '@/app/actions/gemini';
 
 interface AIAssistantProps {
@@ -75,8 +75,8 @@ export function AIAssistant({ recordedChunks }: AIAssistantProps) {
         <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-zinc-900 dark:to-zinc-900 border-indigo-100 dark:border-indigo-900/30">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold flex items-center gap-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-                    <Sparkles className="w-5 h-5 text-indigo-500" />
-                    AI Assistant
+                    <Cpu className="w-5 h-5 text-indigo-500" />
+                    Neural Core
                 </h3>
                 <Button variant="ghost" size="sm" onClick={() => setShowKeyInput(!showKeyInput)} className="text-xs text-gray-400">
                     <Key className="w-3 h-3 mr-1" /> {apiKey ? 'Key Set' : 'Set Key'}

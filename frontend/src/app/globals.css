@@ -1,26 +1,120 @@
 @import "tailwindcss";
 
+@theme {
+  --color-cyber-pink: #ff00ff;
+  --color-cyber-cyan: #00ffff;
+  --color-cyber-yellow: #f3e600;
+  --color-cyber-black: #050505;
+  --color-cyber-dark: #0d0d0d;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050505;
+  --foreground: #ffffff;
+  --cyber-pink: #ff00ff;
+  --cyber-cyan: #00ffff;
+  --cyber-yellow: #f3e600;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans), sans-serif;
+    background-image: 
+      linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+      linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+    position: relative;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+    pointer-events: none;
+    z-index: 10;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .cyber-grid {
+    background-image: 
+      linear-gradient(to right, rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .text-glitch {
+    position: relative;
+    text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.75),
+                -0.025em -0.05em 0 rgba(0, 255, 255, 0.75),
+                0.025em 0.05em 0 rgba(243, 230, 0, 0.75);
+    animation: glitch 500ms infinite;
+  }
+
+  .cyber-border {
+    position: relative;
+    border: 1px solid var(--cyber-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    clip-path: polygon(
+      0% 0%, 
+      calc(100% - 10px) 0%, 
+      100% 10px, 
+      100% 100%, 
+      10px 100%, 
+      0% calc(100% - 10px)
+    );
+  }
+
+  .cyber-button-clip {
+    clip-path: polygon(
+      -10% 0%, 
+      100% 0%, 
+      110% 100%, 
+      0% 100%
+    );
+  }
+
+  @keyframes glitch {
+    0% {
+      text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.75),
+                  -0.05em -0.025em 0 rgba(0, 255, 255, 0.75),
+                  -0.025em 0.05em 0 rgba(243, 230, 0, 0.75);
+    }
+    14% {
+      text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.75),
+                  -0.05em -0.025em 0 rgba(0, 255, 255, 0.75),
+                  -0.025em 0.05em 0 rgba(243, 230, 0, 0.75);
+    }
+    15% {
+      text-shadow: -0.05em -0.025em 0 rgba(255, 0, 255, 0.75),
+                  0.025em 0.025em 0 rgba(0, 255, 255, 0.75),
+                  -0.05em -0.05em 0 rgba(243, 230, 0, 0.75);
+    }
+    49% {
+      text-shadow: -0.05em -0.025em 0 rgba(255, 0, 255, 0.75),
+                  0.025em 0.025em 0 rgba(0, 255, 255, 0.75),
+                  -0.05em -0.05em 0 rgba(243, 230, 0, 0.75);
+    }
+    50% {
+      text-shadow: 0.025em 0.05em 0 rgba(255, 0, 255, 0.75),
+                  0.05em 0 0 rgba(0, 255, 255, 0.75),
+                  0 -0.05em 0 rgba(243, 230, 0, 0.75);
+    }
+    99% {
+      text-shadow: 0.025em 0.05em 0 rgba(255, 0, 255, 0.75),
+                  0.05em 0 0 rgba(0, 255, 255, 0.75),
+                  0 -0.05em 0 rgba(243, 230, 0, 0.75);
+    }
+    100% {
+      text-shadow: -0.025em 0 0 rgba(255, 0, 255, 0.75),
+                  -0.025em -0.025em 0 rgba(0, 255, 255, 0.75),
+                  -0.025em -0.05em 0 rgba(243, 230, 0, 0.75);
+    }
+  }
 }

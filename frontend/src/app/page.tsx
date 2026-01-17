@@ -1,14 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Mic, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Mic, Terminal, Activity, Waves, Cpu } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] gap-12 text-center">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] gap-12 text-center relative z-20">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -16,52 +16,57 @@ export default function Home() {
         transition={{ duration: 0.8 }}
         className="space-y-6 max-w-4xl"
       >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 dark:bg-white/10 border border-indigo-200 dark:border-white/10 backdrop-blur-sm mb-4">
-          <Sparkles className="w-4 h-4 text-amber-500" />
-          <span className="text-sm font-medium text-indigo-900 dark:text-indigo-100">
-            The Future of Podcast Creation
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 backdrop-blur-sm mb-4">
+          <Terminal className="w-4 h-4 text-cyber-cyan" />
+          <span className="text-sm font-medium text-cyber-cyan uppercase tracking-[0.2em]">
+            System Status: Online
           </span>
         </div>
 
-        <h1 className="text-6xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 pb-2">
-          Your Studio. <br /> Anywhere.
+        <h1 className="text-6xl md:text-8xl font-black tracking-tighter pb-2">
+          <span className="block text-white">YOUR STUDIO.</span>
+          <span className="block text-glitch text-cyber-cyan">ANYWHERE.</span>
         </h1>
 
-        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-          Record high-quality video podcasts directly from your browser.
-          Real-time collaboration, instant editing, and professional polish.
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-mono">
+          [PROTOCOL: PODCASTING] <br />
+          Record high-quality video directly from your browser.
+          Zero latency. Infinite scale.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
           <Link href="/studio">
-            <Button size="lg" className="rounded-full text-lg h-14 px-8">
-              Start Creating <ArrowRight className="w-5 h-5 ml-2" />
+            <Button variant="cyber" size="lg" className="text-xl h-16 px-12">
+              Access Studio <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
           <Link href="/explore">
-            <Button variant="ghost" size="lg" className="rounded-full text-lg h-14 px-8">
-              Watch Demo
+            <Button variant="secondary" size="lg" className="rounded-none border-2 h-16 px-12 uppercase font-bold tracking-widest">
+              Explore Network
             </Button>
           </Link>
         </div>
       </motion.div>
 
       {/* Features Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mt-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mt-20">
         {[
           {
-            icon: Mic,
-            title: "Crystal Clear Audio",
+            icon: Waves,
+            title: "NEURAL AUDIO",
+            color: "text-cyber-cyan",
             description: "Advanced noise suppression and local recording for studio-quality sound."
           },
           {
-            icon: Zap,
-            title: "Real-time Magic",
+            icon: Activity,
+            title: "ZERO LATENCY",
+            color: "text-cyber-pink",
             description: "Zero-latency collaboration with up to 4 guests in 4K quality."
           },
           {
-            icon: Sparkles,
-            title: "AI Polish",
+            icon: Cpu,
+            title: "AI CORE",
+            color: "text-cyber-yellow",
             description: "Automated editing, mixing, and transcriptions in seconds."
           }
         ].map((feature, i) => (
@@ -71,12 +76,13 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 + (i * 0.1) }}
           >
-            <Card className="h-full hover:border-indigo-500/30 transition-colors text-left group">
-              <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 w-fit rounded-xl mb-4 group-hover:scale-110 transition-transform">
-                <feature.icon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+            <Card isCyber className="group hover:-translate-y-2 transition-transform duration-300">
+              <div className={`p-4 bg-white/5 w-fit rounded-none mb-6 group-hover:bg-white/10 transition-colors`}>
+                <feature.icon className={`w-8 h-8 ${feature.color}`} />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
-              <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
+              <h3 className={`text-2xl font-black mb-3 italic tracking-tight ${feature.color}`}>{feature.title}</h3>
+              <p className="text-gray-400 font-mono text-sm leading-relaxed">{feature.description}</p>
+              <div className="mt-6 h-1 w-0 group-hover:w-full bg-current transition-all duration-500 opacity-50" />
             </Card>
           </motion.div>
         ))}

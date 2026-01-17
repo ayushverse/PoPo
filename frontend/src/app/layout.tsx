@@ -27,8 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-white to-white dark:from-gray-900 dark:via-black dark:to-black min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cyber-black min-h-screen relative overflow-x-hidden`}
       >
+        <div className="fixed inset-0 cyber-grid pointer-events-none opacity-20" />
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-1 pt-24 w-full">

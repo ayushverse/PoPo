@@ -47,7 +47,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 ;
 ;
 ;
-// Helper to save buffer to temp file
 async function saveToTemp(buffer) {
     const filename = `upload-${(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$uuid$2f$dist$2d$node$2f$v4$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__v4$3e$__["v4"])()}.webm`;
     const filepath = (0, __TURBOPACK__imported__module__$5b$externals$5d2f$path__$5b$external$5d$__$28$path$2c$__cjs$29$__["join"])((0, __TURBOPACK__imported__module__$5b$externals$5d2f$os__$5b$external$5d$__$28$os$2c$__cjs$29$__["tmpdir"])(), filename);
@@ -61,16 +60,13 @@ async function processVideoWithGemini(formData, apiKey, modelName, prompt) {
     try {
         const fileManager = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$google$2f$generative$2d$ai$2f$dist$2f$server$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["GoogleAIFileManager"](apiKey);
         const genAI = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$google$2f$generative$2d$ai$2f$dist$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["GoogleGenerativeAI"](apiKey);
-        // 1. Save to temp disk (FileManager needs local path)
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         const tempPath = await saveToTemp(buffer);
-        // 2. Upload to Google AI
         const uploadResult = await fileManager.uploadFile(tempPath, {
             mimeType: file.type || 'video/webm',
             displayName: "Studio Recording"
         });
-        // 3. Wait for processing (Video takes time)
         let fileState = await fileManager.getFile(uploadResult.file.name);
         while(fileState.state === 'PROCESSING'){
             await new Promise((resolve)=>setTimeout(resolve, 2000));
@@ -79,7 +75,6 @@ async function processVideoWithGemini(formData, apiKey, modelName, prompt) {
         if (fileState.state === 'FAILED') {
             throw new Error("Video processing failed.");
         }
-        // 4. Generate Content
         const model = genAI.getGenerativeModel({
             model: modelName || "gemini-1.5-flash-latest"
         });
@@ -92,9 +87,7 @@ async function processVideoWithGemini(formData, apiKey, modelName, prompt) {
                 }
             }
         ]);
-        // Cleanup
         await (0, __TURBOPACK__imported__module__$5b$externals$5d2f$fs$2f$promises__$5b$external$5d$__$28$fs$2f$promises$2c$__cjs$29$__["unlink"])(tempPath).catch((e)=>console.error("Temp cleanup failed", e));
-        // await fileManager.deleteFile(uploadResult.file.name); // Optional: keep for cache or delete
         return result.response.text();
     } catch (error) {
         console.error("Gemini Error:", error);
@@ -111,7 +104,6 @@ async function listGeminiModels(apiKey) {
         }
         const data = await response.json();
         if (!data.models) return [];
-        // Filter for models that support content generation and are stable/latest
         return data.models.filter((m)=>m.supportedGenerationMethods?.includes("generateContent")).map((m)=>({
                 name: m.name.replace('models/', ''),
                 displayName: m.displayName
